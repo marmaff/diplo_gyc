@@ -1,0 +1,12 @@
+{
+  "name": "diplo_gyc",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.4",
+    "lint-staged": "^15.2.8"
+  }
+}

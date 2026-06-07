@@ -1,0 +1,5 @@
+{
+  "frontend/**/*.{js,jsx}": "npm --prefix frontend exec eslint",
+  "bff/**/*.js": "npm --prefix bff exec eslint",
+  "backend/**": "mvn checkstyle:check -pl backend"
+}
