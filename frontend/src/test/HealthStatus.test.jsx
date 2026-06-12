@@ -8,4 +8,10 @@ describe('HealthStatus', () => {
     expect(screen.getByText('status: ok')).toBeInTheDocument();
     expect(screen.getByText('app: bff')).toBeInTheDocument();
   });
+
+  it('shows loading message when health is null', () => {
+    render(<HealthStatus health={null} />);
+
+    expect(screen.getByText('Cargando health...')).toBeInTheDocument();
+  });
 });

@@ -31,11 +31,22 @@ describe('entityController', () => {
     expect(res.json).toHaveBeenCalledWith(created);
   });
 
-  it('returns 500 when service fails', async () => {
+  it('returns 500 when getProducts service fails on GET', async () => {
     entityService.getProducts.mockRejectedValue(new Error('fail'));
     const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
 
     await listProducts({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });
+  });
+
+  it('returns 500 when createProduct service fails on POST', async () => {
+    entityService.createProduct.mockRejectedValue(new Error('fail'));
+    const req = { body: { name: 'X' } };
+    const res = { json: jest.fn(), status: jest.fn().mockReturnThis() };
+
+    await addProduct(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Internal server error' });

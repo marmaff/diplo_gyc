@@ -75,6 +75,9 @@
               <goal>check</goal>
             </goals>
             <configuration>
+              <excludes>
+                <exclude>com/diplogyc/backend/BackendApplication.class</exclude>
+              </excludes>
               <rules>
                 <rule>
                   <element>BUNDLE</element>
@@ -82,7 +85,7 @@
                     <limit>
                       <counter>LINE</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.70</minimum>
+                      <minimum>0.81</minimum>
                     </limit>
                   </limits>
                 </rule>

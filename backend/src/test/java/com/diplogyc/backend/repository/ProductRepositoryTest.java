@@ -29,4 +29,15 @@ class ProductRepositoryTest {
     assertNotNull(saved.getId());
     assertEquals(4, repository.findAll().size());
   }
+
+  @Test
+  void shouldKeepExistingIdWhenProductAlreadyHasOne() {
+    ProductRepository repository = new ProductRepository();
+    Product product = new Product(99L, "Auriculares", "BT 5.0", 59.99);
+
+    Product saved = repository.save(product);
+
+    assertEquals(99L, saved.getId());
+    assertEquals(4, repository.findAll().size());
+  }
 }
