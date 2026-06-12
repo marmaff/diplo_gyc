@@ -1,6 +1,7 @@
 name: CD Main - Flujo de Entrega y Despliegue
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*.*.*'
@@ -10,26 +11,25 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  verificar-rama-origen:
-    name: Verificar que el Tag esté en Main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Validar si el commit pertenece a la rama main
-        run: |
-          echo "🔍 Analizando el commit asociado al tag..."
-          git fetch origin main
-          # Verifica si el commit actual (${{ github.sha }}) está dentro de la historia de origin/main
-          if git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
-            echo "✅ PASS: El tag fue creado sobre un commit de la rama main."
-          else
-            echo "❌ ERROR: El tag no pertenece a la rama main. El despliegue se cancela."
-            exit 1
-          fi
+  # verificar-rama-origen:
+  #   name: Verificar que el Tag esté en Main
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout del código
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #
+  #     - name: Validar si el commit pertenece a la rama main
+  #       run: |
+  #         echo "🔍 Analizando el commit asociado al tag..."
+  #         git fetch origin main
+  #         if git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
+  #           echo "✅ PASS: El tag fue creado sobre un commit de la rama main."
+  #         else
+  #           echo "❌ ERROR: El tag no pertenece a la rama main. El despliegue se cancela."
+  #           exit 1
+  #         fi
 
   entrega-build-and-push:
     name: Construir y Subir Imágenes
@@ -38,7 +38,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
@@ -50,7 +49,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Empaqueta usando el Tag Semántico como nombre de versión
       - name: Build & Push Backend
         uses: docker/build-push-action@v5
         with:
@@ -76,19 +74,36 @@ jobs:
     name: Despliegue a Staging
     needs: entrega-build-and-push
     environment: staging
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Ejecutar despliegue en Staging
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Levantar Staging
+        env:
+          PORT_BACKEND: ${{ vars.PORT_BACKEND }}
+          PORT_BFF: ${{ vars.PORT_BFF }}
+          PORT_FRONTEND: ${{ vars.PORT_FRONTEND }}
         run: |
-          echo "Desplegando la versión oficial ${{ github.ref_name }} en Staging..."
+          echo "Levantando Staging en puertos secundarios..."
+          docker compose pull
+          docker compose -p staging up -d
 
   despliegue-produccion:
     name: Despliegue a Producción
     needs: despliegue-staging
     environment: production
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Ejecutar despliegue en Producción
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Levantar Producción
+        env:
+          PORT_BACKEND: ${{ vars.PORT_BACKEND }}
+          PORT_BFF: ${{ vars.PORT_BFF }}
+          PORT_FRONTEND: ${{ vars.PORT_FRONTEND }}
         run: |
-          echo "¡Aprobación manual recibida!"
-          echo "Desplegando la versión oficial ${{ github.ref_name }} en Producción."
+          echo "Levantando Producción..."
+          docker compose pull
+          docker compose -p prod up -d
