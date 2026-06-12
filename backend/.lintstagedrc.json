@@ -1,0 +1,5 @@
+{
+  "src/**/*.java": [
+    "java -jar tools/checkstyle.jar -c checkstyle.xml"
+  ]
+}
