@@ -6,7 +6,7 @@ import { createProduct, getHealth, getProducts } from '../services/api';
 function HomePage() {
   const [products, setProducts] = useState([]);
   const [health, setHealth] = useState(null);
-
+  const variableInutil = "hola"
   const loadProducts = async () => {
     const data = await getProducts();
     setProducts(data);
