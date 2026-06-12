@@ -21,8 +21,6 @@
     <module name="FinalClass"/>
     <module name="UpperEll"/>
     <module name="ModifierOrder"/>
-    <module name="EmptyLineSeparator"/>
-    <module name="SeparatorWrap"/>
     <module name="PackageName"/>
     <module name="TypeName"/>
     <module name="MemberName"/>
