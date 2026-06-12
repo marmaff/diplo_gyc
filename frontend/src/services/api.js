@@ -2,6 +2,9 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
+const new = '';
+console.log(new);
+
 export const getProducts = async () => {
   const response = await axios.get(`${BASE_URL}/api/products`);
   return response.data;
