@@ -25,7 +25,24 @@ jobs:
           cache: "maven"
 
       - name: Compilar Backend con Maven
-        run: mvn clean compile -pl backend
+        run: mvn clean verify -pl backend
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Tests Frontend
+        working-directory: frontend
+        run: |
+          npm ci
+          npm test
+
+      - name: Tests BFF
+        working-directory: bff
+        run: |
+          npm ci
+          npm test
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@master

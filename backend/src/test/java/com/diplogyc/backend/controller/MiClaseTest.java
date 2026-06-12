@@ -4,11 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-class miClaseTest {
+class MiClaseTest {
 
   @Test
   void shouldReturnHolaFromLongNamedMethod() {
-    miClase obj = new miClase();
+    MiClase obj = new MiClase();
 
     String result = obj.unMetodoConUnNombreDemasiadoLargoQueExcedeElLimiteDeCaracteresPermitidosPorGoogleStyle();
 
@@ -17,7 +17,7 @@ class miClaseTest {
 
   @Test
   void shouldExecuteOtroMetodoWithoutException() {
-    miClase obj = new miClase();
+    MiClase obj = new MiClase();
 
     obj.otroMetodo();
   }
