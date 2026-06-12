@@ -5,8 +5,16 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 
 export default [
-  { ignores: ['dist', 'coverage'] },
   {
+	ignores: [
+      "node_modules/**",
+      "coverage/**",
+      "dist/**",
+      "**/*.test.js",
+      "**/*.spec.js",
+      "__tests__/**",
+      "eslint.config.js",
+    ],
     files: ['**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2020,
