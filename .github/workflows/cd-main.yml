@@ -3,6 +3,8 @@ name: CD Main - Flujo de Entrega y Despliegue
 on:
   workflow_dispatch:
   push:
+    branches:
+      - 10-staging-deploy-configuration
     tags:
       - 'v*.*.*'
 
@@ -33,7 +35,7 @@ jobs:
 
   entrega-build-and-push:
     name: Construir y Subir Imágenes
-    needs: verificar-rama-origen
+    # needs: verificar-rama-origen
     runs-on: ubuntu-latest
     permissions:
       contents: read
