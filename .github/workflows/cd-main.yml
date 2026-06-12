@@ -76,7 +76,7 @@ jobs:
     name: Despliegue a Staging
     needs: entrega-build-and-push
     environment: staging
-    runs-on: self-hosted
+    runs-on: [self-hosted, local-tomi]
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
     name: Despliegue a Producción
     needs: despliegue-staging
     environment: production
-    runs-on: self-hosted
+    runs-on: [self-hosted, local-tomi]
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4

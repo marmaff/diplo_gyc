@@ -41,7 +41,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+        working-directory: frontend
+      - run: npm run lint
         working-directory: frontend
       - run: npm run test
         working-directory: frontend
@@ -58,7 +62,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+        working-directory: bff
+      - run: npm run lint
         working-directory: bff
       - run: npm run test
         working-directory: bff
@@ -77,5 +85,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+          cache: maven
+      - run: mvn checkstyle:check -pl backend
       - run: mvn test -pl backend
       - run: mvn verify -pl backend
