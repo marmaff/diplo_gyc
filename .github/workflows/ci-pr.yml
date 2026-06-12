@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   changes:
-    runs-on: self-hosted # probar si se puede con el nombre del runner
+    runs-on: local-lara
     outputs:
       frontend: ${{ steps.filter.outputs.frontend }}
       bff: ${{ steps.filter.outputs.bff }}
