@@ -1,11 +1,6 @@
 package com.diplogyc.backend.controller;
 
-import java.time.Instant;
-import java.util.Map;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-public class miClase {
+public class MiClase {
 
     // Línea con más de 100 caracteres (Google Style permite máximo 100)
     public String unMetodoConUnNombreDemasiadoLargoQueExcedeElLimiteDeCaracteresPermitidosPorGoogleStyle() {
