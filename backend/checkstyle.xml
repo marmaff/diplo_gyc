@@ -4,9 +4,10 @@
     "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <module name="Checker">
   <property name="charset" value="UTF-8"/>
-  <property name="severity" value="warning"/>
+  <property name="severity" value="error"/>
   <property name="fileExtensions" value="java, properties, xml"/>
   <module name="TreeWalker">
+    <module name="UnusedImports"/>
     <module name="OuterTypeFilename"/>
     <module name="AvoidStarImport"/>
     <module name="NeedBraces"/>
@@ -20,8 +21,6 @@
     <module name="FinalClass"/>
     <module name="UpperEll"/>
     <module name="ModifierOrder"/>
-    <module name="EmptyLineSeparator"/>
-    <module name="SeparatorWrap"/>
     <module name="PackageName"/>
     <module name="TypeName"/>
     <module name="MemberName"/>
