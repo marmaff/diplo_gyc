@@ -1,0 +1,92 @@
+name: CD Main - Flujo de Entrega y Despliegue
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  verificar-rama-origen:
+    name: Verificar que el Tag esté en Main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validar si el commit pertenece a la rama main
+        run: |
+          echo "🔍 Analizando el commit asociado al tag..."
+          git fetch origin main
+          if git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
+            echo "✅ PASS: El tag fue creado sobre un commit de la rama main."
+          else
+            echo "❌ ERROR: El tag no pertenece a la rama main. El despliegue se cancela."
+            exit 1
+          fi
+
+  entrega-build-and-push:
+    name: Construir y Subir Imágenes
+    needs: verificar-rama-origen
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Set lowercase image name
+        run: echo "IMAGE_NAME_LC=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Login en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LC }}-backend:${{ github.ref_name }}
+
+      - name: Build & Push BFF
+        uses: docker/build-push-action@v5
+        with:
+          context: ./bff
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LC }}-bff:${{ github.ref_name }}
+
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LC }}-frontend:${{ github.ref_name }}
+
+  despliegue-staging:
+    name: Despliegue a Staging
+    needs: entrega-build-and-push
+    environment: staging
+    runs-on: self-hosted
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Levantar Staging
+        env:
+          PORT_BACKEND: ${{ vars.PORT_BACKEND }}
+          PORT_BFF: ${{ vars.PORT_BFF }}
+          PORT_FRONTEND: ${{ vars.PORT_FRONTEND }}
+        run: |
+          echo "Levantando Staging en puertos secundarios..."
+          docker compose pull
+          docker compose -p staging up -d
