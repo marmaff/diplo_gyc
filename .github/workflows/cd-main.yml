@@ -12,7 +12,7 @@ env:
 jobs:
   verificar-rama-origen:
     name: Verificar que el Tag esté en Main
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, lara]
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
@@ -33,7 +33,7 @@ jobs:
   entrega-build-and-push:
     name: Construir y Subir Imágenes
     needs: verificar-rama-origen
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, lara]
     permissions:
       contents: read
       packages: write
