@@ -11,3 +11,5 @@ Para poder ejecutar los pipelines de despliegue en tu propia máquina, necesitá
 3. Haz clic en **New self-hosted runner**.
 4. Elegir OS y arquitectura y seguir los pasos
 ```
+
+Test it
