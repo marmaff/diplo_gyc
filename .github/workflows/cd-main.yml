@@ -3,7 +3,7 @@ name: CD Main - Flujo de Entrega y Despliegue
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 env:
   REGISTRY: ghcr.io
@@ -90,3 +90,22 @@ jobs:
           echo "Levantando Staging en puertos secundarios..."
           docker compose pull
           docker compose -p staging up -d
+
+  despliegue-produccion:
+    name: Despliegue a Producción
+    needs: despliegue-staging
+    environment: production
+    runs-on: self-hosted
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Levantar Producción
+        env:
+          PORT_BACKEND: ${{ vars.PORT_BACKEND }}
+          PORT_BFF: ${{ vars.PORT_BFF }}
+          PORT_FRONTEND: ${{ vars.PORT_FRONTEND }}
+        run: |
+          echo "Levantando Producción..."
+          docker compose pull
+          docker compose -p prod up -d
